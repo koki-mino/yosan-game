@@ -497,6 +497,12 @@ Object.keys(sliders).forEach(key => {
 // 「この予算で1年すすむ」ボタン
 nextYearBtn.addEventListener('click', () => {
   goNextYear();
+
+  // 1年進んだあと、ページの一番上へスクロール
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'  // なめらかに戻る（即座に戻したい場合は 'auto' に）
+  });
 });
 
 // 「はじめからやり直す」ボタン
