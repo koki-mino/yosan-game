@@ -1,0 +1,23 @@
+/* 足利シティマスター用 カスタムスタイル */
+
+body {
+  /* Tailwindのbg-slate-100と合わせて、少しだけグラデーション感を足してもOK */
+  background: radial-gradient(circle at top, #e5edff 0, #f1f5f9 45%, #e2e8f0 100%);
+}
+
+/* 小さい画面でのカード間隔を少し詰める */
+@media (max-width: 640px) {
+  .slider-card {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* details要素のsummaryに、ちょっとだけ見やすさを追加 */
+details > summary {
+  list-style: none;
+}
+
+details > summary::marker,
+details > summary::-webkit-details-marker {
+  display: none;
+}
