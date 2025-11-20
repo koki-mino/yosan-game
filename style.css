@@ -1,18 +1,191 @@
 /* 足利シティマスター用 カスタムスタイル */
 
-body {
-  /* Tailwindのbg-slate-100と合わせて、少しだけグラデーション感を足してもOK */
-  background: radial-gradient(circle at top, #e5edff 0, #f1f5f9 45%, #e2e8f0 100%);
+/* 背景をほんのりグラデーションに */
+.app-bg {
+  background: radial-gradient(circle at top, #e0e7ff 0, #f1f5f9 45%, #e2e8f0 100%);
 }
 
-/* 小さい画面でのカード間隔を少し詰める */
+/* メインカードにうっすら枠と影を */
+.app-card {
+  box-shadow:
+    0 18px 40px rgba(15, 23, 42, 0.12),
+    0 0 0 1px rgba(148, 163, 184, 0.22);
+}
+
+/* セクション見出しをそろえる */
+.section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0f172a;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  position: relative;
+  padding-left: 0.85rem;
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 1.2em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #4f46e5, #22c55e);
+}
+
+/* ステータスカード（年・予算・ヒント） */
+.status-pill {
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.8), rgba(241, 245, 249, 0.95));
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  padding: 0.75rem 0.9rem;
+}
+
+.status-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.status-main {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.status-sub {
+  margin-top: 0.2rem;
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+/* メーター */
+.meter-card {
+  padding: 0.65rem 0.75rem 0.7rem;
+  border-radius: 0.9rem;
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.meter-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.meter-value {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+}
+
+.meter-bar {
+  position: relative;
+  width: 100%;
+  height: 0.35rem;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 240ms ease-out;
+}
+
+/* スライダーカード（間隔だけ調整） */
+.slider-card {
+  transition: transform 140ms ease-out, box-shadow 140ms ease-out, border-color 140ms ease-out;
+}
+
+.slider-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(148, 163, 184, 0.35);
+  border-color: rgba(129, 140, 248, 0.65);
+}
+
+/* 小さい画面での間隔 */
 @media (max-width: 640px) {
   .slider-card {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 }
 
-/* details要素のsummaryに、ちょっとだけ見やすさを追加 */
+/* イベントカード */
+.event-card {
+  font-size: 0.8rem;
+  color: #334155;
+  background: linear-gradient(90deg, rgba(199, 210, 254, 0.25), rgba(248, 250, 252, 0.95));
+  border-radius: 0.9rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(199, 210, 254, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.event-card::before {
+  content: "✦";
+  position: absolute;
+  left: 0.55rem;
+  top: 0.5rem;
+  font-size: 0.7rem;
+  color: #4f46e5;
+  opacity: 0.7;
+}
+
+.event-card {
+  padding-left: 1.6rem; /* アイコン分の余白 */
+}
+
+/* 市民の声リスト */
+.voices-list {
+  list-style: none;
+  padding: 0.35rem 0.4rem 0.25rem;
+  margin: 0;
+  border-radius: 0.9rem;
+  border: 1px dashed rgba(203, 213, 225, 0.9);
+  background: #f8fafc;
+}
+
+.voices-list li {
+  position: relative;
+  padding-left: 1.25rem;
+  padding-right: 0.25rem;
+  font-size: 0.7rem;
+  color: #475569;
+}
+
+.voices-list li + li {
+  margin-top: 0.15rem;
+}
+
+.voices-list li::before {
+  content: "“";
+  position: absolute;
+  left: 0.25rem;
+  top: -0.05rem;
+  font-size: 0.8rem;
+  color: #6366f1;
+}
+
+/* history details */
+.history-details {
+  border-radius: 0.75rem;
+  padding: 0.35rem 0.55rem 0.35rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.history-summary {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* detailsのデフォルト矢印を消す */
 details > summary {
   list-style: none;
 }
@@ -20,4 +193,22 @@ details > summary {
 details > summary::marker,
 details > summary::-webkit-details-marker {
   display: none;
+}
+
+/* summaryの前に小さい矢印を追加 */
+.history-summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 0.35rem;
+  color: #9ca3af;
+  transition: transform 0.15s ease-out;
+}
+
+details[open] .history-summary::before {
+  transform: rotate(90deg);
+}
+
+/* 入力レンジ（スライダー）のつまみが見やすくなるように（Safari向け軽微調整） */
+input[type="range"] {
+  cursor: pointer;
 }
