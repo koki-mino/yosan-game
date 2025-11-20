@@ -221,9 +221,10 @@ function applyBudgetEffect() {
   const s = state.stats;
   const ref = referenceAllocation;
 
+  // --- 教育・子どもの影響を強める（①） ---
   // 市民満足度：福祉・医療・にぎわい・インフラ・教育など
   s.citizen +=
-    0.1 * (a.education - ref.education) +
+    0.3 * (a.education - ref.education) + // ← 0.1 から 0.3 に強化
     0.3 * (a.welfare - ref.welfare) +
     0.2 * (a.medical - ref.medical) +
     0.2 * (a.vitality - ref.vitality) +
@@ -232,11 +233,12 @@ function applyBudgetEffect() {
 
   // 将来の安心度：教育・防災・医療・インフラ
   s.future +=
-    0.4 * (a.education - ref.education) +
+    0.6 * (a.education - ref.education) + // ← 0.4 から 0.6 に強化
     0.4 * (a.safety - ref.safety) +
     0.2 * (a.medical - ref.medical) +
     0.2 * (a.infrastructure - ref.infrastructure);
 
+  // --- 道路・インフラを増やすと財政がよりマイナス（②） ---
   // 財政の健全さ：借金返済・貯金が増えると上がるが、
   // 福祉・医療・にぎわい・インフラ・教育に入れすぎると下がることも
   s.fiscal +=
@@ -245,8 +247,8 @@ function applyBudgetEffect() {
     0.3 * (a.welfare - ref.welfare) -
     0.2 * (a.medical - ref.medical) -
     0.2 * (a.vitality - ref.vitality) -
-    0.1 * (a.infrastructure - ref.infrastructure) -
-    0.1 * (a.education - ref.education);
+    0.3 * (a.infrastructure - ref.infrastructure) - // ← −0.1 から −0.3 に強化
+    0.15 * (a.education - ref.education); // 教育にたくさん振ると財政には少しマイナス
 
   // 何もしなくても少しずつバランスが崩れるイメージ
   s.citizen -= 0.5;
@@ -263,7 +265,7 @@ function applyBudgetEffect() {
 function applyRandomEvent() {
   const a = state.allocations;
   const s = state.stats;
-  const idx = Math.floor(Math.random() * 7); // 0〜6
+  const idx = Math.floor(Math.random() * 10); // 0〜9（③：イベント増量）
   let text = '';
 
   switch (idx) {
@@ -300,13 +302,14 @@ function applyRandomEvent() {
       break;
 
     case 2:
-      // 子ども・若者イベント
+      // 子ども・若者イベント（教育強化版）
       if (a.education >= referenceAllocation.education + 5) {
-        s.future += 5;
-        s.citizen += 2;
+        s.future += 6;
+        s.citizen += 3;
         text = '学校や子ども・若者への投資が実を結び、中学生ボランティアなどの活動が盛んになりました。将来への期待が高まっています。';
       } else if (a.education <= referenceAllocation.education - 5) {
         s.future -= 5;
+        s.citizen -= 2;
         text = '教育・子どもへの投資が少なく、学びの機会が足りないという声が出ています。';
       } else {
         s.future += 1;
@@ -371,6 +374,49 @@ function applyRandomEvent() {
         text = '全国的な景気の影響で、税収がわずかに減りました。';
       }
       break;
+
+    case 7:
+      // 行政のデジタル化・窓口改善（admin）
+      if (a.admin >= referenceAllocation.admin + 5) {
+        s.citizen += 2;
+        s.future += 1;
+        text = '市役所の手続きがオンライン化され、窓口の待ち時間も短くなりました。市民の便利さが向上しています。';
+      } else {
+        s.citizen -= 1;
+        text = '市役所の手続きが分かりにくいという声が続いています。行政のデジタル化が課題です。';
+      }
+      break;
+
+    case 8:
+      // 文化・観光イベント（にぎわい + 教育）
+      if (a.vitality >= referenceAllocation.vitality + 5 && a.education >= referenceAllocation.education) {
+        s.citizen += 3;
+        s.fiscal += 2;
+        text = '歴史や文化を活かしたイベントが成功し、多くの人が足利市を訪れました。市民の誇りと税収が高まりました。';
+      } else if (a.vitality <= referenceAllocation.vitality - 5) {
+        s.citizen -= 2;
+        text = '観光やイベントが少なく、まちなかが少しさみしいという声が聞かれます。';
+      } else {
+        s.citizen += 1;
+        text = '小さなイベントがいくつか開かれ、地域のつながりが少しずつ育っています。';
+      }
+      break;
+
+    case 9:
+      // 若者の定住・流出（教育 + にぎわい）
+      if (a.education >= referenceAllocation.education + 5 && a.vitality >= referenceAllocation.vitality) {
+        s.future += 4;
+        s.citizen += 2;
+        text = '教育や仕事の環境が評価され、若者が足利市に残ったり戻ってきたりする動きが見られます。';
+      } else if (a.education <= referenceAllocation.education - 5 || a.vitality <= referenceAllocation.vitality - 5) {
+        s.future -= 4;
+        s.citizen -= 2;
+        text = '進学や就職で若者の市外流出が目立ち、「戻ってこないかも」という声も聞かれます。';
+      } else {
+        s.future -= 1;
+        text = '若者の定住と流出は拮抗しています。今後の取り組み次第で変わっていきそうです。';
+      }
+      break;
   }
 
   // 値を0〜100におさめる
@@ -387,6 +433,7 @@ function generateCitizenVoices() {
   const s = state.stats;
   const voices = [];
 
+  // プラスの声（分野ごと）
   if (a.education >= referenceAllocation.education + 5) {
     voices.push('中学生の居場所や学びの場が増えてきてうれしいです。（中学生）');
   }
@@ -402,18 +449,37 @@ function generateCitizenVoices() {
   if (a.welfare >= referenceAllocation.welfare + 5) {
     voices.push('高齢者サロンが増えて、外に出るきっかけになりました。（高齢者）');
   }
+  if (a.infrastructure >= referenceAllocation.infrastructure + 5) {
+    voices.push('道路や公園が整って、家族で出かけやすくなりました。（保護者）');
+  }
+  if (a.medical >= referenceAllocation.medical + 5) {
+    voices.push('健康づくり教室に参加して、体調がよくなりました。（市民）');
+  }
+  if (a.admin >= referenceAllocation.admin + 5) {
+    voices.push('市役所の手続きがオンラインでできて助かります。（保護者）');
+  }
+
+  // マイナス寄りの声（指標や配分が低いとき）
   if (s.fiscal <= 40) {
     voices.push('将来の借金が心配だという声も出ています。（市民）');
   }
   if (s.future <= 40) {
     voices.push('災害への備えや子どもの学びに、もっと力を入れてほしいです。（市民）');
   }
+  if (a.education <= referenceAllocation.education - 5) {
+    voices.push('進学や仕事のことで、将来が少し心配です。（高校生）');
+  }
+  if (a.vitality <= referenceAllocation.vitality - 5) {
+    voices.push('夜は人通りが少なくて、まちなかがさみしく感じます。（市民）');
+  }
 
-  // いつでも出る共通コメント
+  // いつでも出る共通コメント（④ 種類増量）
   const generic = [
     '市役所の広報が分かりやすくなってきました。（市民）',
     '若い人の意見をもっと聞いてほしいという声もあります。（高校生）',
-    '地域のつながりを強くしていきたいですね。（町内会）'
+    '地域のつながりを強くしていきたいですね。（町内会）',
+    '子どもから高齢者まで、みんなが参加できるイベントがあるとうれしいです。（市民）',
+    '足利市の良さを、もっと市外の人にも知ってほしいです。（商店街）'
   ];
 
   voices.push(...generic);
@@ -501,7 +567,7 @@ nextYearBtn.addEventListener('click', () => {
   // 1年進んだあと、ページの一番上へスクロール
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'  // なめらかに戻る（即座に戻したい場合は 'auto' に）
+    behavior: 'smooth'
   });
 });
 
