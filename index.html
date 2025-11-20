@@ -11,320 +11,382 @@
   <!-- カスタムCSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="min-h-screen bg-slate-100 flex items-center justify-center p-4">
-  <div class="max-w-5xl w-full bg-white rounded-2xl shadow-lg p-4 md:p-6 space-y-4">
-    <!-- タイトル -->
-    <header class="space-y-1 border-b pb-3">
-      <h1 class="text-2xl md:text-3xl font-bold text-slate-800">
-        足利シティマスター
-      </h1>
-      <p class="text-sm md:text-base text-slate-600">
-        あなたは足利市長です。令和7年度の一般会計当初予算は
-        <span class="font-semibold">約598億円</span>あります。
-        このゲームでは、その598億円をわかりやすく
-        <span class="font-semibold">100コイン</span>にした世界で、
-        「どの分野にどれくらい使うか」を考えます。
-      </p>
-      <p class="text-xs text-slate-500">
-        ※1コインはざっくり「約6億円」のイメージです（実際の予算を簡単にした学習用ゲームです）。
-      </p>
-      <p class="text-xs text-slate-500">
-        「市民満足度」「将来の安心度」「財政の健全さ」の3つを、どうバランスさせるかがポイントです。
-      </p>
-    </header>
+<body class="min-h-screen bg-slate-100 flex items-center justify-center p-4 app-bg">
+  <div class="max-w-5xl w-full bg-white/95 backdrop-blur rounded-3xl shadow-xl border border-slate-200 app-card">
+    <div class="p-4 md:p-6 space-y-5">
+      <!-- タイトル -->
+      <header class="space-y-2 border-b border-slate-200 pb-4 relative">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="inline-flex items-center gap-1 text-[11px] md:text-xs font-semibold tracking-wide uppercase text-indigo-500 bg-indigo-50 rounded-full px-2.5 py-1">
+              <span class="text-[13px]">🏙</span> Ashikaga City Budget Game
+            </p>
+            <h1 class="mt-2 text-2xl md:text-3xl font-bold text-slate-800 tracking-tight">
+              足利シティマスター
+            </h1>
+          </div>
+          <div class="text-right text-[11px] md:text-xs text-slate-500 leading-relaxed bg-slate-50/80 px-3 py-2 rounded-2xl border border-slate-100">
+            <p>令和7年度 一般会計当初予算：<span class="font-semibold">約598億円</span></p>
+            <p>このゲームでは、それを <span class="font-semibold">100コイン</span> にして考えます。</p>
+          </div>
+        </div>
 
-    <!-- ゲーム状況 -->
-    <section id="game-status" class="grid md:grid-cols-3 gap-4 items-center">
-      <div class="space-y-1">
-        <p class="text-sm text-slate-500">いまの年</p>
-        <p id="year-label" class="text-2xl font-bold text-slate-800">1年目 / 10年</p>
-      </div>
-      <div class="space-y-1">
-        <p class="text-sm text-slate-500">今年つかえるお金</p>
-        <p class="text-xl font-semibold text-emerald-700">100コイン</p>
-        <p id="budget-rest" class="text-xs text-slate-500"></p>
-      </div>
-      <div class="space-y-1">
-        <p class="text-sm text-slate-500">ヒント</p>
-        <p id="hint-text" class="text-xs md:text-sm text-slate-600">
-          8つの分野の合計が 100 コインになるようにスライダーを動かしてね。
+        <p class="text-xs md:text-[13px] text-slate-600 mt-2">
+          「教育・子ども」「福祉」「防災」「まちのにぎわい」など、8つの分野に予算を分けながら、
+          <span class="font-semibold text-slate-800">市民満足度・将来の安心度・財政の健全さ</span> のバランスをめざしましょう。
         </p>
-      </div>
-    </section>
-
-    <!-- 予算スライダー（8分野） -->
-    <section aria-label="予算配分" class="space-y-3">
-      <h2 class="text-lg font-semibold text-slate-800">今年の予算を決めよう</h2>
-
-      <!-- 合計表示 -->
-      <div class="flex flex-wrap items-baseline gap-2 text-sm">
-        <span>合計：</span>
-        <span id="total-coins" class="font-bold text-slate-900">0</span>
-        <span>/ 100 コイン</span>
-        <span class="text-xs text-slate-500">（100コインちょうどで1年進めます）</span>
-      </div>
-
-      <div class="grid md:grid-cols-2 gap-4">
-        <!-- 教育・子ども -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">教育・子ども</p>
-              <p class="text-xs text-slate-500">
-                学校、学習、子ども・若者の居場所づくりなど。
-              </p>
-            </div>
-            <span id="val-education" class="text-lg font-bold text-indigo-600">0</span>
-          </div>
-          <input
-            id="slider-education"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="education"
-          />
-        </div>
-
-        <!-- 福祉・高齢者 -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">福祉・高齢者</p>
-              <p class="text-xs text-slate-500">
-                高齢者・障がいのある人・子育て支援など。
-              </p>
-            </div>
-            <span id="val-welfare" class="text-lg font-bold text-rose-600">0</span>
-          </div>
-          <input
-            id="slider-welfare"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="welfare"
-          />
-        </div>
-
-        <!-- 医療・衛生 -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">医療・衛生</p>
-              <p class="text-xs text-slate-500">
-                病院、健康づくり、感染症対策など。
-              </p>
-            </div>
-            <span id="val-medical" class="text-lg font-bold text-emerald-600">0</span>
-          </div>
-          <input
-            id="slider-medical"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="medical"
-          />
-        </div>
-
-        <!-- 防災・安全 -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">防災・安全</p>
-              <p class="text-xs text-slate-500">
-                大雨・地震への備え、通学路の安全、消防など。
-              </p>
-            </div>
-            <span id="val-safety" class="text-lg font-bold text-emerald-700">0</span>
-          </div>
-          <input
-            id="slider-safety"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="safety"
-          />
-        </div>
-
-        <!-- 道路・インフラ -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">道路・インフラ</p>
-              <p class="text-xs text-slate-500">
-                道路、橋、公園、上下水道など、まちの土台。
-              </p>
-            </div>
-            <span id="val-infrastructure" class="text-lg font-bold text-amber-700">0</span>
-          </div>
-          <input
-            id="slider-infrastructure"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="infrastructure"
-          />
-        </div>
-
-        <!-- まちのにぎわい・産業 -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">まちのにぎわい・産業</p>
-              <p class="text-xs text-slate-500">
-                観光、イベント、お店や工場の支援など。
-              </p>
-            </div>
-            <span id="val-vitality" class="text-lg font-bold text-amber-600">0</span>
-          </div>
-          <input
-            id="slider-vitality"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="vitality"
-          />
-        </div>
-
-        <!-- 行政運営 -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">行政運営</p>
-              <p class="text-xs text-slate-500">
-                市役所の仕事、ICT化、広報など。
-              </p>
-            </div>
-            <span id="val-admin" class="text-lg font-bold text-slate-700">0</span>
-          </div>
-          <input
-            id="slider-admin"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="admin"
-          />
-        </div>
-
-        <!-- 借金返済・貯金 -->
-        <div class="border rounded-xl p-3 space-y-1">
-          <div class="flex items-center justify-between gap-2">
-            <div>
-              <p class="font-semibold text-slate-800">借金返済・貯金</p>
-              <p class="text-xs text-slate-500">
-                借金をへらしたり、いざという時のために貯金したり。
-              </p>
-            </div>
-            <span id="val-debt" class="text-lg font-bold text-slate-800">0</span>
-          </div>
-          <input
-            id="slider-debt"
-            type="range"
-            min="0" max="40" step="5"
-            class="w-full"
-            data-key="debt"
-          />
-        </div>
-      </div>
-
-      <!-- 操作ボタン -->
-      <div class="flex flex-wrap gap-3 items-center justify-between pt-2">
-        <button
-          id="next-year-btn"
-          class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          この予算で1年すすむ
-        </button>
-        <button
-          id="reset-btn"
-          class="px-4 py-2 rounded-full text-xs md:text-sm border border-slate-300 text-slate-600 hover:bg-slate-50"
-        >
-          はじめからやり直す
-        </button>
-        <p class="text-xs text-slate-500">
-          合計が100コインちょうどになると「すすむ」ボタンが押せます。
+        <p class="text-[11px] text-slate-400 mt-1">
+          ※1コインはざっくり「約6億円」のイメージです（実際の予算を簡単にした学習用ゲームです）。
         </p>
-      </div>
-    </section>
+      </header>
 
-    <!-- 指標メーター -->
-    <section aria-label="まちの状態" class="space-y-3">
-      <h2 class="text-lg font-semibold text-slate-800">足利市のようす</h2>
-      <div class="grid gap-3">
-        <!-- 市民満足度 -->
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-semibold text-slate-700">市民満足度</span>
-            <span id="label-citizen" class="font-mono text-slate-700">50</span>
+      <!-- ゲーム状況 -->
+      <section id="game-status" class="grid md:grid-cols-3 gap-4 items-stretch">
+        <div class="status-pill">
+          <p class="status-label">いまの年</p>
+          <p id="year-label" class="status-main text-indigo-700">1年目 / 10年</p>
+        </div>
+        <div class="status-pill">
+          <p class="status-label">今年つかえるお金</p>
+          <p class="status-main text-emerald-700">100コイン</p>
+          <p id="budget-rest" class="status-sub text-emerald-700/80"></p>
+        </div>
+        <div class="status-pill">
+          <p class="status-label">ヒント</p>
+          <p id="hint-text" class="status-sub">
+            8つの分野の合計が 100 コインになるようにスライダーを動かしてね。
+          </p>
+        </div>
+      </section>
+
+      <!-- イベント＆市民の声（★スライダーより上に移動） -->
+      <section aria-label="出来事" class="space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="section-title">
+            今年の出来事と市民の声
+          </h2>
+          <p class="text-[11px] text-slate-400">
+            去年までの結果を見て、今年の予算を考えよう。
+          </p>
+        </div>
+
+        <!-- イベント -->
+        <div id="event-message" class="event-card">
+          まだゲームははじまったばかり。どんな足利市にしたいか考えてみよう。
+        </div>
+
+        <!-- 市民の声 -->
+        <div class="space-y-1.5">
+          <h3 class="text-xs font-semibold text-slate-700 flex items-center gap-1">
+            <span class="text-base">💬</span> 市民の声
+          </h3>
+          <ul id="citizen-voices-list" class="voices-list min-h-[2.5rem]">
+            <!-- JSでliが入ります -->
+          </ul>
+        </div>
+
+        <!-- 履歴 -->
+        <details class="mt-1 text-xs text-slate-600 history-details">
+          <summary class="cursor-pointer select-none history-summary">
+            これまでの記録（クリックしてひらく）
+          </summary>
+          <ul id="history-list" class="list-disc pl-5 space-y-1 mt-1"></ul>
+        </details>
+      </section>
+
+      <!-- 指標メーター -->
+      <section aria-label="まちの状態" class="space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="section-title">
+            足利市のようす（3つのメーター）
+          </h2>
+          <p class="text-[11px] text-slate-400">
+            どのメーターを大事にするか考えてみよう。
+          </p>
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-3">
+          <!-- 市民満足度 -->
+          <div class="meter-card">
+            <div class="flex justify-between items-baseline mb-1">
+              <span class="meter-label">市民満足度</span>
+              <span id="label-citizen" class="meter-value">50</span>
+            </div>
+            <div class="meter-bar bg-slate-200">
+              <div id="bar-citizen" class="meter-fill bg-indigo-500" style="width: 50%;"></div>
+            </div>
           </div>
-          <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
-            <div id="bar-citizen" class="h-full bg-indigo-500" style="width: 50%;"></div>
+
+          <!-- 将来の安心度 -->
+          <div class="meter-card">
+            <div class="flex justify-between items-baseline mb-1">
+              <span class="meter-label">将来の安心度</span>
+              <span id="label-future" class="meter-value">50</span>
+            </div>
+            <div class="meter-bar bg-slate-200">
+              <div id="bar-future" class="meter-fill bg-emerald-500" style="width: 50%;"></div>
+            </div>
+          </div>
+
+          <!-- 財政の健全さ -->
+          <div class="meter-card">
+            <div class="flex justify-between items-baseline mb-1">
+              <span class="meter-label">財政の健全さ</span>
+              <span id="label-fiscal" class="meter-value">50</span>
+            </div>
+            <div class="meter-bar bg-slate-200">
+              <div id="bar-fiscal" class="meter-fill bg-rose-500" style="width: 50%;"></div>
+            </div>
           </div>
         </div>
 
-        <!-- 将来の安心度 -->
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-semibold text-slate-700">将来の安心度</span>
-            <span id="label-future" class="font-mono text-slate-700">50</span>
+        <p class="text-[11px] text-slate-500">
+          どれか1つだけを上げすぎると、ほかが下がってしまうことも…。
+          <span class="font-semibold">バランス</span> が大事です。
+        </p>
+      </section>
+
+      <!-- 予算スライダー（8分野） -->
+      <section aria-label="予算配分" class="space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="section-title">
+            今年の予算を決めよう（100コイン）
+          </h2>
+          <p class="text-[11px] text-slate-400">
+            スライダーを動かして、8分野の合計を100コインにしよう。
+          </p>
+        </div>
+
+        <!-- 合計表示 -->
+        <div class="flex flex-wrap items-baseline gap-2 text-sm bg-slate-50 rounded-2xl px-3 py-2 border border-slate-100">
+          <span>合計：</span>
+          <span id="total-coins" class="font-bold text-slate-900 text-lg tracking-tight">0</span>
+          <span>/ 100 コイン</span>
+          <span class="text-[11px] text-slate-500">
+            （100コインちょうどで「この予算で1年すすむ」が押せます）
+          </span>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <!-- 教育・子ども -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-indigo-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🎒</span> 教育・子ども
+                </p>
+                <p class="text-xs text-slate-500">
+                  学校、学習、子ども・若者の居場所づくりなど。
+                </p>
+              </div>
+              <span id="val-education" class="text-lg font-bold text-indigo-600 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-education"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-indigo-500"
+              data-key="education"
+            />
           </div>
-          <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
-            <div id="bar-future" class="h-full bg-emerald-500" style="width: 50%;"></div>
+
+          <!-- 福祉・高齢者 -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-rose-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🤝</span> 福祉・高齢者
+                </p>
+                <p class="text-xs text-slate-500">
+                  高齢者・障がいのある人・子育て支援など。
+                </p>
+              </div>
+              <span id="val-welfare" class="text-lg font-bold text-rose-600 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-welfare"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-rose-500"
+              data-key="welfare"
+            />
+          </div>
+
+          <!-- 医療・衛生 -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-emerald-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🩺</span> 医療・衛生
+                </p>
+                <p class="text-xs text-slate-500">
+                  病院、健康づくり、感染症対策など。
+                </p>
+              </div>
+              <span id="val-medical" class="text-lg font-bold text-emerald-600 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-medical"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-emerald-500"
+              data-key="medical"
+            />
+          </div>
+
+          <!-- 防災・安全 -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-sky-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🛟</span> 防災・安全
+                </p>
+                <p class="text-xs text-slate-500">
+                  大雨・地震への備え、通学路の安全、消防など。
+                </p>
+              </div>
+              <span id="val-safety" class="text-lg font-bold text-sky-700 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-safety"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-sky-500"
+              data-key="safety"
+            />
+          </div>
+
+          <!-- 道路・インフラ -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-amber-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🛣</span> 道路・インフラ
+                </p>
+                <p class="text-xs text-slate-500">
+                  道路、橋、公園、上下水道など、まちの土台。
+                </p>
+              </div>
+              <span id="val-infrastructure" class="text-lg font-bold text-amber-700 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-infrastructure"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-amber-500"
+              data-key="infrastructure"
+            />
+          </div>
+
+          <!-- まちのにぎわい・産業 -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-orange-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🎪</span> まちのにぎわい・産業
+                </p>
+                <p class="text-xs text-slate-500">
+                  観光、イベント、お店や工場の支援など。
+                </p>
+              </div>
+              <span id="val-vitality" class="text-lg font-bold text-orange-600 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-vitality"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-orange-500"
+              data-key="vitality"
+            />
+          </div>
+
+          <!-- 行政運営 -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-slate-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">🏛</span> 行政運営
+                </p>
+                <p class="text-xs text-slate-500">
+                  市役所の仕事、ICT化、広報など。
+                </p>
+              </div>
+              <span id="val-admin" class="text-lg font-bold text-slate-700 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-admin"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-slate-500"
+              data-key="admin"
+            />
+          </div>
+
+          <!-- 借金返済・貯金 -->
+          <div class="border rounded-2xl p-3 space-y-1 slider-card bg-gradient-to-br from-zinc-50/80 to-white">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <p class="font-semibold text-slate-800 flex items-center gap-1">
+                  <span class="text-[15px]">💰</span> 借金返済・貯金
+                </p>
+                <p class="text-xs text-slate-500">
+                  借金をへらしたり、いざという時のために貯金したり。
+                </p>
+              </div>
+              <span id="val-debt" class="text-lg font-bold text-slate-800 tabular-nums">0</span>
+            </div>
+            <input
+              id="slider-debt"
+              type="range"
+              min="0" max="40" step="5"
+              class="w-full accent-zinc-600"
+              data-key="debt"
+            />
           </div>
         </div>
 
-        <!-- 財政の健全さ -->
-        <div>
-          <div class="flex justify-between text-xs mb-1">
-            <span class="font-semibold text-slate-700">財政の健全さ</span>
-            <span id="label-fiscal" class="font-mono text-slate-700">50</span>
+        <!-- 操作ボタン -->
+        <div class="flex flex-wrap gap-3 items-center justify-between pt-2">
+          <div class="flex gap-2">
+            <button
+              id="next-year-btn"
+              class="px-4 py-2 rounded-full text-sm font-semibold bg-indigo-600 text-white shadow-sm hover:bg-indigo-700 transition disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              この予算で1年すすむ
+            </button>
+            <button
+              id="reset-btn"
+              class="px-4 py-2 rounded-full text-xs md:text-sm border border-slate-300 text-slate-600 hover:bg-slate-50 transition"
+            >
+              はじめからやり直す
+            </button>
           </div>
-          <div class="h-3 bg-slate-200 rounded-full overflow-hidden">
-            <div id="bar-fiscal" class="h-full bg-rose-500" style="width: 50%;"></div>
-          </div>
+          <p class="text-[11px] text-slate-500">
+            年ごとの配分や結果は、上の「これまでの記録」からふり返ることができます。
+          </p>
         </div>
-      </div>
-      <p class="text-xs text-slate-500">
-        どれか1つだけを上げすぎると、ほかが下がってしまうことも…。
-        バランスが大事です。
-      </p>
-    </section>
+      </section>
 
-    <!-- イベント＆市民の声＆履歴 -->
-    <section aria-label="出来事" class="space-y-2">
-      <h2 class="text-lg font-semibold text-slate-800">今年の主な出来事</h2>
-      <div id="event-message" class="text-sm bg-slate-50 border rounded-xl p-3 text-slate-700 min-h-[3rem]">
-        まだゲームははじまったばかり。どんな足利市にしたいか考えてみよう。
-      </div>
-
-      <h3 class="text-sm font-semibold text-slate-800 mt-2">市民の声</h3>
-      <ul id="citizen-voices-list" class="text-xs bg-slate-50 border rounded-xl p-3 text-slate-700 space-y-1 min-h-[2.5rem]">
-      </ul>
-
-      <details class="mt-1 text-xs text-slate-600">
-        <summary class="cursor-pointer select-none">
-          これまでの記録（クリックしてひらく）
-        </summary>
-        <ul id="history-list" class="list-disc pl-5 space-y-1 mt-1"></ul>
-      </details>
-    </section>
-
-    <!-- ゲーム結果 -->
-    <section id="result-section" class="hidden border-t pt-4 mt-2">
-      <h2 class="text-xl font-bold text-slate-800 mb-2">10年後の足利市</h2>
-      <p id="result-text" class="text-sm text-slate-700 mb-3"></p>
-      <ul class="text-xs text-slate-600 list-disc pl-5 mb-3">
-        <li>市民満足度：<span id="result-citizen"></span></li>
-        <li>将来の安心度：<span id="result-future"></span></li>
-        <li>財政の健全さ：<span id="result-fiscal"></span></li>
-      </ul>
-      <p class="text-xs text-slate-500">
-        正解は1つではありません。どんな市長になりたいか、話し合ってみよう。
-        「教育重視型」「福祉重視型」「財政健全化重視型」など、いろいろなスタイルがあります。
-      </p>
-    </section>
+      <!-- ゲーム結果 -->
+      <section id="result-section" class="hidden border-t border-slate-200 pt-4 mt-2">
+        <h2 class="text-xl font-bold text-slate-800 mb-2 flex items-center gap-2">
+          <span class="text-xl">🏁</span> 10年後の足利市
+        </h2>
+        <p id="result-text" class="text-sm text-slate-700 mb-3"></p>
+        <ul class="text-xs text-slate-600 list-disc pl-5 mb-3 space-y-0.5">
+          <li>市民満足度：<span id="result-citizen"></span></li>
+          <li>将来の安心度：<span id="result-future"></span></li>
+          <li>財政の健全さ：<span id="result-fiscal"></span></li>
+        </ul>
+        <p class="text-[11px] text-slate-500 leading-relaxed">
+          正解は1つではありません。どんな市長になりたいか、話し合ってみよう。<br />
+          「教育重視型」「福祉重視型」「財政健全化重視型」など、いろいろなスタイルがあります。
+        </p>
+      </section>
+    </div>
   </div>
 
   <!-- ゲームロジック -->
   <script src="main.js"></script>
 </body>
-  </html>
+</html>
