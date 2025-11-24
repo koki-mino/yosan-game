@@ -1,4 +1,8 @@
 // 足利シティマスター メインロジック
+// 画面切り替え用
+const introArea = document.getElementById('intro-area');
+const gameArea = document.getElementById('game-area');
+const startBtn = document.getElementById('start-btn');
 
 // ===== ゲームの状態（データ） =====
 const state = {
@@ -558,6 +562,15 @@ Object.keys(sliders).forEach(key => {
   sliders[key].addEventListener('input', () => {
     updateUI();
   });
+});
+// 「ゲームを始める」ボタン（説明 → ゲーム画面へ）
+startBtn.addEventListener('click', () => {
+  if (introArea) introArea.classList.add('hidden');
+  if (gameArea) gameArea.classList.remove('hidden');
+
+  // 念のため、ゲーム開始時に初期化＆一番上へ
+  initGame();
+  window.scrollTo({ top: 0, behavior: 'auto' });
 });
 
 // 「この予算で1年すすむ」ボタン
